@@ -80,6 +80,8 @@ spec:
               value: '{{ .Values.aiAssistantEnabled | ternary "true" "false" }}'
             - name: REACT_APP_SUPPORT_CHAT_ENABLED
               value: '{{ and .Values.supportChatEnabled .Values.internetConnectivity | ternary "true" "false" }}'
+            - name: REACT_APP_BETA_ENABLED
+              value: '{{ default false .Values.betaEnabled | ternary "true" "false" }}'
             - name: REACT_APP_DISSECTORS_UPDATING_ENABLED
               value: '{{ .Values.tap.liveConfigMapChangesDisabled | ternary "false" "true" }}'
             - name: REACT_APP_SENTRY_ENABLED
@@ -175,3 +177,6 @@ spec:
             name: kubeshark-nginx-config-map
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: {{ include "kubeshark.serviceAccountName" . }}
+      {{- if .Values.tap.priorityClass }}
+      priorityClassName: {{ .Values.tap.priorityClass | quote }}
+      {{- end }}
